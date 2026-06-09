@@ -12,8 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            // Clé primaire personnalisée pour correspondre exactement au MCD
+            $table->id('idUtilisateur'); 
+            
+            // Propriétés de l'utilisateur définies dans le sujet
+            $table->string('nom');
+            $table->string('prenom');
+            $table->string('email')->unique(); // 'unique' empêche d'avoir deux fois le même email
+            
+            // Optionnel mais indispensable pour Laravel (gestion des tokens de connexion et dates)
+            $table->rememberToken();
+            $table->timestamps(); // Crée 'created_at' et 'updated_at'
         });
     }
 

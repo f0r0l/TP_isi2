@@ -21,6 +21,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('users', function (Blueprint $table) {
+            $table->id('idUtilisateur'); // idUtilisateur
+            $table->string('nom');
+            $table->string('prenom');
+            $table->string('email')->unique();
+            $table->timestamps();
+        });
+
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -35,6 +43,7 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+        
     }
 
     /**

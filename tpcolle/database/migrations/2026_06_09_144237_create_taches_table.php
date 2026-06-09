@@ -12,28 +12,39 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('taches', function (Blueprint $table) {
-    $table->id('idTache'); // idTache
-    $table->string('titre');
-    $table->text('details')->nullable();
-    
-    // Note : etat est de type booléen (vrai = terminée, faux = en cours)
-    $table->boolean('etat')->default(false);
-    
-    // Le champ « priorite » contient une liste définie
-    $table->enum('priorite', [
-        'top priority', 
-        'very high priority', 
-        'high priority', 
-        'normal priority', 
-        'low priority'
-    ])->default('normal priority');
+            // Clé primaire conforme au MCD
+            $table->id('idTache');
+            
+            // Attributs textuels
+            $table->string('titre');
+            $table->text('details')->nullable(); // nullable permet de ne pas mettre de détails
+            
+            // État de la tâche : vrai si terminée, faux si en cours (par défaut)
+            $table->boolean('etat')->default(false);
+            
+            // Liste stricte des priorités demandées dans l'énoncé
+            $table->enum('priorite', [
+                'top priority',
+                'very high priority',
+                'high priority',
+                'normal priority',
+                'low priority'
+            ])->default('normal priority'); // Priorité par défaut si non spécifiée
 
-    // Clés étrangères (Foreign Keys) découlant des relations 1,1
-    $table->foreignId('utilisateur_id')->constrained('users', 'idUtilisateur')->onDelete('cascade');
-    $table->foreignId('projet_id')->constrained('projets', 'idProjet')->onDelete('cascade');
-    
-    $table->timestamps();
-});
+            // --- CLÉS ÉTRANGÈRES ---
+            
+            // Liaison avec la table 'users' sur la clé personnalisée 'idUtilisateur'
+            $table->foreignId('utilisateur_id')
+                  ->constrained('users', 'idUtilisateur')
+                  ->onDelete('cascade'); // Si l'utilisateur est supprimé, ses tâches le sont aussi
+
+            // Liaison avec la table 'projets' sur la clé personnalisée 'idProjet'
+            $table->foreignId('projet_id')
+                  ->constrained('projets', 'idProjet')
+                  ->onDelete('cascade'); // Si le projet est supprimé, ses tâches le sont aussi
+            
+            $table->timestamps();
+        });
     }
 
     /**
